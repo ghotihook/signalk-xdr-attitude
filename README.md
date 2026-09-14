@@ -1,69 +1,36 @@
-# signalk-xdr-attitude
+# XDR to Attitude
 
-A simple way to map multiple NMEA 0183 XDR transducers into Signal K's `navigation.attitude` (roll, pitch and yaw).
+A Signal K plugin that maps NMEA 0183 XDR sentences into `navigation.attitude` (roll, pitch and yaw).
 
-Devices name the same measurement differently. One heel sensor sends `M5_HEEL` and another sends `ROLL`. Trim might arrive as `TRIM`, `PITCH` or `UPDOWN`. With this plugin you list every name that should feed each axis. It then publishes them all as one attitude value (in radians) that Signal K instruments and apps already understand.
+## Why it exists
 
-For example:
+Heel, trim and heading sensors often send their readings as XDR sentences, but every device chooses its own transducer name. One heel sensor says `M5_HEEL`, another says `ROLL`. Trim might be `TRIM`, `PITCH` or `UPDOWN`. This plugin is a simple way to map all of those names onto Signal K's standard attitude data, so your instruments and apps can use them.
 
-| Axis  | Example names             |
-|-------|---------------------------|
-| roll  | `m5_heel, roll`           |
-| pitch | `trim, pitch, updown`     |
-| yaw   | `yaw, angle, hdg`         |
+## Install
 
-Enter `NA` (or leave the field empty) to turn an axis off.
+Install **XDR to Attitude** from the Signal K **Appstore**, then restart the server.
 
-## Installation
+## How to use
 
-In the Signal K admin UI, go to **Appstore → Available**, search for **XDR to Attitude**, and install it. Restart the server, then open **Server → Plugin Config → XDR to Attitude** to enter your names and enable the plugin.
+1. Open **Server → Plugin Config → XDR to Attitude**.
+2. For each axis, list the XDR transducer names that should feed it, separated by commas. Names aren't case-sensitive.
 
-To install from the command line instead, run this in your Signal K config folder (usually `~/.signalk`) and restart the server:
+   | Axis         | Example               |
+   |--------------|-----------------------|
+   | Roll / Heel  | `m5_heel, roll`       |
+   | Pitch / Trim | `trim, pitch, updown` |
+   | Yaw          | `yaw, angle, hdg`     |
 
-```sh
-npm install signalk-xdr-attitude
-```
+   Enter `NA` for any axis you don't have.
+3. Enable the plugin and submit. The values appear under `navigation.attitude` in the Data Browser.
 
-## Supported input
+The plugin handles one XDR sentence carrying several values, and separate sentences with one value each. Separate values are combined into a single attitude.
 
-Both of these work, and you can mix them:
+### Other settings
 
-- **One sentence with several transducers:**
-  `$IIXDR,A,5.3,D,M5_HEEL,A,-2.1,D,TRIM,A,181.0,D,HDG*hh`
-- **Several sentences with one transducer each:**
-  `$IIXDR,A,5.3,D,ROLL*hh`, then `$IIXDR,A,-2.1,D,PITCH*hh`, and so on.
+- **Invert sign:** for a sensor mounted backwards.
+- **Offset:** a calibration correction, in degrees.
+- **Maximum age:** how long a value from a separate sentence is kept, in seconds (default 5). `0` keeps it forever.
+- **Sentence events:** leave as `nmea0183` unless your connection sends sentences under a custom event name.
 
-When values arrive in separate sentences, the plugin merges them. Every sentence that matches publishes a single `navigation.attitude` object with the latest value for each axis. Any value older than **Maximum age** is dropped from that object. Set Maximum age to `0` to keep values forever.
-
-Parsing details:
-
-- Transducer names are case-insensitive.
-- A unit of `R` means radians. Any other unit, including `D`, is treated as degrees.
-- Sentences with a bad checksum are ignored. Sentences with no checksum are accepted.
-- NMEA 4.10 tag blocks (`\s:...*hh\$IIXDR...`) are supported.
-
-## Configuration
-
-For each axis (Roll / Heel, Pitch / Trim, Yaw):
-
-- **XDR transducer names**: a comma-separated list of names, or `NA` to turn the axis off.
-- **Invert sign**: flips the sign, for sensors mounted backwards.
-- **Offset (degrees)**: a calibration offset, added after inversion.
-
-General settings:
-
-- **Maximum age (seconds)**: how long a value from a separate sentence stays in the combined attitude. The default is 5.
-- **Sentence events**: the server events that carry raw NMEA 0183 sentences. The default is `nmea0183`. If a connection is set to emit a custom sentence event, add that event name here.
-
-If the same name is listed under two axes, the plugin uses the first axis and logs an error.
-
-## Notes
-
-- The plugin reads raw sentences from any NMEA 0183 connection (serial, TCP, UDP) that has not suppressed the `nmea0183` event.
-- The built-in NMEA 0183 parser may already turn some standard names (for example `ROLL` or `PITCH`) into attitude data. If that happens, Signal K shows two sources for `navigation.attitude`. Use source priorities to choose one, or map only your custom names here.
-
-## Development
-
-```sh
-npm test
-```
+**Tip:** if `navigation.attitude` shows two sources, Signal K may be decoding some standard names itself. Choose one in Signal K's source priority settings, or only list your custom names here.
