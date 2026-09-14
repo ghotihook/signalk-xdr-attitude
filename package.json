@@ -5,14 +5,17 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "lib/"
+    "lib/",
+    "CHANGELOG.md"
   ],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "signalk-node-server-plugin",
     "signalk-category-nmea-0183",
+    "signalk-category-utility",
     "signalk",
     "nmea0183",
     "xdr",
@@ -26,6 +29,14 @@
   },
   "author": "ghotihook",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghotihook/signalk-xdr-attitude.git"
+  },
+  "homepage": "https://github.com/ghotihook/signalk-xdr-attitude#readme",
+  "bugs": {
+    "url": "https://github.com/ghotihook/signalk-xdr-attitude/issues"
+  },
   "engines": {
     "node": ">=18"
   }

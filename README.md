@@ -1,8 +1,10 @@
 # signalk-xdr-attitude
 
-A Signal K server plugin that reads NMEA 0183 `XDR` sentences and publishes `navigation.attitude` (`roll`, `pitch`, `yaw`, in radians).
+A simple way to map multiple NMEA 0183 XDR transducers into Signal K's `navigation.attitude` (roll, pitch and yaw).
 
-Each axis takes a list of XDR transducer names, so data from different devices can go to the same axis:
+Devices name the same measurement differently. One heel sensor sends `M5_HEEL` and another sends `ROLL`. Trim might arrive as `TRIM`, `PITCH` or `UPDOWN`. With this plugin you list every name that should feed each axis. It then publishes them all as one attitude value (in radians) that Signal K instruments and apps already understand.
+
+For example:
 
 | Axis  | Example names             |
 |-------|---------------------------|
@@ -11,6 +13,16 @@ Each axis takes a list of XDR transducer names, so data from different devices c
 | yaw   | `yaw, angle, hdg`         |
 
 Enter `NA` (or leave the field empty) to turn an axis off.
+
+## Installation
+
+In the Signal K admin UI, go to **Appstore → Available**, search for **XDR to Attitude**, and install it. Restart the server, then open **Server → Plugin Config → XDR to Attitude** to enter your names and enable the plugin.
+
+To install from the command line instead, run this in your Signal K config folder (usually `~/.signalk`) and restart the server:
+
+```sh
+npm install signalk-xdr-attitude
+```
 
 ## Supported input
 
