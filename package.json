@@ -1,0 +1,32 @@
+{
+  "name": "signalk-xdr-attitude",
+  "version": "1.0.0",
+  "description": "Signal K plugin mapping NMEA 0183 XDR transducer names to navigation.attitude roll/pitch/yaw",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "lib/"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "signalk-node-server-plugin",
+    "signalk-category-nmea-0183",
+    "signalk",
+    "nmea0183",
+    "xdr",
+    "attitude",
+    "heel",
+    "roll",
+    "pitch"
+  ],
+  "signalk": {
+    "displayName": "XDR to Attitude"
+  },
+  "author": "ghotihook",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
