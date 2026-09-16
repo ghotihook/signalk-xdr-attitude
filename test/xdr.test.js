@@ -59,33 +59,34 @@ test('single sentence with all three axes, aliases, case-insensitive', () => {
 test('separate sentences are merged into one attitude', () => {
   const mapper = createAttitudeMapper(config)
   let a = mapper.process(withCs('$IIXDR,A,5,D,ROLL'), 0)
-  assert.deepEqual(Object.keys(a), ['roll'])
+  assert.deepEqual(a, { roll: rad(5), pitch: null, yaw: null })
   a = mapper.process(withCs('$IIXDR,A,-3,D,TRIM'), 100)
   near(a.roll, rad(5))
   near(a.pitch, rad(-3))
+  assert.equal(a.yaw, null)
   a = mapper.process(withCs('$IIXDR,A,45,D,ANGLE'), 200)
-  assert.deepEqual(Object.keys(a).sort(), ['pitch', 'roll', 'yaw'])
+  assert.ok(['roll', 'pitch', 'yaw'].every((k) => typeof a[k] === 'number'))
 })
 
-test('stale values are dropped after maxAge', () => {
+test('stale values become null after maxAge', () => {
   const mapper = createAttitudeMapper({ ...config, maxAge: 1 })
   mapper.process(withCs('$IIXDR,A,5,D,ROLL'), 0)
   const a = mapper.process(withCs('$IIXDR,A,-3,D,PITCH'), 1500)
-  assert.deepEqual(Object.keys(a), ['pitch'])
+  assert.deepEqual(a, { roll: null, pitch: rad(-3), yaw: null })
 })
 
 test('maxAge 0 never expires', () => {
   const mapper = createAttitudeMapper({ ...config, maxAge: 0 })
   mapper.process(withCs('$IIXDR,A,5,D,ROLL'), 0)
   const a = mapper.process(withCs('$IIXDR,A,-3,D,PITCH'), 1e9)
-  assert.deepEqual(Object.keys(a).sort(), ['pitch', 'roll'])
+  assert.deepEqual(a, { roll: rad(5), pitch: rad(-3), yaw: null })
 })
 
 test('NA axis is ignored and unmapped sentences produce nothing', () => {
   const mapper = createAttitudeMapper({ roll: { names: 'roll' }, pitch: { names: 'NA' }, yaw: { names: '' } })
   assert.equal(mapper.process(withCs('$IIXDR,A,3,D,PITCH'), 0), null)
   assert.equal(mapper.process(withCs('$IIXDR,C,20,C,TEMP'), 0), null)
-  assert.deepEqual(Object.keys(mapper.process(withCs('$IIXDR,A,3,D,PITCH,A,1,D,ROLL'), 0)), ['roll'])
+  assert.deepEqual(mapper.process(withCs('$IIXDR,A,3,D,PITCH,A,1,D,ROLL'), 0), { roll: rad(1), pitch: null, yaw: null })
 })
 
 test('invert, offset and radian units', () => {
@@ -101,7 +102,7 @@ test('invert, offset and radian units', () => {
 test('name mapped to two axes is reported and first wins', () => {
   const mapper = createAttitudeMapper({ roll: { names: 'x' }, pitch: { names: 'x' } })
   assert.equal(mapper.conflicts.length, 1)
-  assert.deepEqual(Object.keys(mapper.process(withCs('$IIXDR,A,1,D,X'), 0)), ['roll'])
+  assert.deepEqual(mapper.process(withCs('$IIXDR,A,1,D,X'), 0), { roll: rad(1), pitch: null, yaw: null })
 })
 
 function fakeApp () {
@@ -128,6 +129,7 @@ test('plugin publishes navigation.attitude once per sentence when emitted on bot
   assert.equal(v.path, 'navigation.attitude')
   near(v.value.roll, rad(5))
   near(v.value.pitch, rad(-2))
+  assert.equal(v.value.yaw, null)
 
   plugin.stop()
   app.emit('nmea0183', s)

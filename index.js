@@ -44,7 +44,7 @@ module.exports = function (app) {
       maxAge: {
         type: 'number',
         title: 'Maximum age (seconds)',
-        description: 'When roll/pitch/yaw arrive in separate sentences, a value older than this is dropped from the combined attitude. 0 = never expire.',
+        description: 'When roll/pitch/yaw arrive in separate sentences, a value older than this is sent as null in the combined attitude. 0 = never expire.',
         default: 5
       },
       events: {
@@ -78,7 +78,7 @@ module.exports = function (app) {
       if (now - lastStatus > 1000) {
         lastStatus = now
         app.setPluginStatus(
-          AXES.filter((a) => a in attitude)
+          AXES.filter((a) => attitude[a] !== null)
             .map((a) => `${a} ${((attitude[a] * 180) / Math.PI).toFixed(1)}°`)
             .join(', ')
         )
