@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 (2026-09-16)
+
+- `navigation.attitude` now always includes roll, pitch and yaw. An axis that is turned off, not yet received, or older than the maximum age is sent as `null` instead of being left out.
+
 ## 1.0.0 (2026-09-15)
 
 First release.
