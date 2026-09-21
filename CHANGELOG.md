@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 (2026-09-22)
+
+- Renamed to **gh - XDR to attitude** in the plugin list and Appstore.
+- Added an app icon.
+
 ## 1.0.1 (2026-09-16)
 
 - `navigation.attitude` now always includes roll, pitch and yaw. An axis that is turned off, not yet received, or older than the maximum age is sent as `null` instead of being left out.
