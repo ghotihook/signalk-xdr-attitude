@@ -6,6 +6,7 @@
   "files": [
     "index.js",
     "lib/",
+    "assets/icon.png",
     "CHANGELOG.md"
   ],
   "scripts": {
@@ -25,7 +26,8 @@
     "pitch"
   ],
   "signalk": {
-    "displayName": "XDR to Attitude"
+    "displayName": "gh - XDR to attitude",
+    "appIcon": "./assets/icon.png"
   },
   "author": "ghotihook",
   "license": "Apache-2.0",

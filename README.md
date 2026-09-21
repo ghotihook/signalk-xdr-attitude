@@ -8,11 +8,11 @@ Heel, trim and heading sensors often send their readings as XDR sentences, but e
 
 ## Install
 
-Install **XDR to Attitude** from the Signal K **Appstore**, then restart the server.
+Install **gh - XDR to attitude** from the Signal K **Appstore**, then restart the server.
 
 ## How to use
 
-1. Open **Server → Plugin Config → XDR to Attitude**.
+1. Open **Server → Plugin Config → gh - XDR to attitude**.
 2. For each axis, list the XDR transducer names that should feed it, separated by commas. Names aren't case-sensitive.
 
    | Axis         | Example               |

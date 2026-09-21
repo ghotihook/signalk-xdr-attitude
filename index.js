@@ -28,7 +28,7 @@ const axisSchema = (title, defaultNames) => ({
 module.exports = function (app) {
   const plugin = {
     id: 'signalk-xdr-attitude',
-    name: 'XDR to Attitude',
+    name: 'gh - XDR to attitude',
     description: 'Maps NMEA 0183 XDR transducer names to navigation.attitude roll/pitch/yaw'
   }
 
