@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.3 (2026-09-22)
 
 - The Appstore heading is back to **XDR to Attitude**. The **gh - XDR to attitude** name now only appears in the plugin list.
 
