@@ -26,7 +26,7 @@
     "pitch"
   ],
   "signalk": {
-    "displayName": "gh - XDR to attitude",
+    "displayName": "XDR to Attitude",
     "appIcon": "./assets/icon.png"
   },
   "author": "ghotihook",
